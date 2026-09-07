@@ -1,0 +1,36 @@
+Q6. Find the average salary of each department.
+SELECT d.dept_name, AVG(e.salary) AS average_salary
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id
+GROUP BY d.dept_name;
+
+Q7. Find the highest salary in each department.
+SELECT d.dept_name, MAX(e.salary) AS highest_salary
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id
+GROUP BY d.dept_name;
+
+Q8. Find the lowest salary in each department.
+SELECT d.dept_name, MIN(e.salary) AS lowest_salary
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id
+GROUP BY d.dept_name;
+
+Q9. Find departments having more than 1 employee.
+SELECT d.dept_name, COUNT(e.emp_id) AS total_employees
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id
+GROUP BY d.dept_name
+HAVING COUNT(e.emp_id) > 1;
+
+Q10. Find departments having average salary greater than 60000.
+SELECT d.dept_name, AVG(e.salary) AS average_salary
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id
+GROUP BY d.dept_name
+HAVING AVG(e.salary) > 60000;
