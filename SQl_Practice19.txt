@@ -1,0 +1,42 @@
+Q16. Find employees earning less than Ravi.
+SELECT emp_name, salary
+FROM employees
+WHERE salary < (
+    SELECT salary
+    FROM employees
+    WHERE emp_name = 'Ravi'
+);
+
+Q17. Find employees who work in the same department as Aman.
+SELECT emp_name
+FROM employees
+WHERE dept_id = (
+    SELECT dept_id
+    FROM employees
+    WHERE emp_name = 'Aman'
+);
+
+Q18. Find employees who work in the same department as Ravi.
+SELECT emp_name
+FROM employees
+WHERE dept_id = (
+    SELECT dept_id
+    FROM employees
+    WHERE emp_name = 'Ravi'
+);
+
+Q19. Find employees whose salary is equal to the highest salary.
+SELECT emp_name, salary
+FROM employees
+WHERE salary = (
+    SELECT MAX(salary)
+    FROM employees
+);
+
+Q20. Find employees whose salary is greater than the lowest salary.
+SELECT emp_name, salary
+FROM employees
+WHERE salary > (
+    SELECT MIN(salary)
+    FROM employees
+);
