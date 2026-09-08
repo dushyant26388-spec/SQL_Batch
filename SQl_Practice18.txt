@@ -1,0 +1,40 @@
+Q11. Find the employee with the highest salary.
+SELECT emp_name, salary
+FROM employees
+WHERE salary = (
+    SELECT MAX(salary)
+    FROM employees
+);
+
+Q12. Find the employee with the lowest salary.
+SELECT emp_name, salary
+FROM employees
+WHERE salary = (
+    SELECT MIN(salary)
+    FROM employees
+);
+
+Q13. Find employees earning more than the average salary.
+SELECT emp_name, salary
+FROM employees
+WHERE salary > (
+    SELECT AVG(salary)
+    FROM employees
+);
+
+Q14. Find employees earning less than the average salary.
+SELECT emp_name, salary
+FROM employees
+WHERE salary < (
+    SELECT AVG(salary)
+    FROM employees
+);
+
+Q15. Find employees earning more than Aman.
+SELECT emp_name, salary
+FROM employees
+WHERE salary > (
+    SELECT salary
+    FROM employees
+    WHERE emp_name = 'Aman'
+);
