@@ -1,0 +1,43 @@
+Q21. Find the department of Aman using a subquery.
+SELECT dept_name
+FROM departments
+WHERE dept_id = (
+    SELECT dept_id
+    FROM employees
+    WHERE emp_name = 'Aman'
+);
+
+Q22. Find all employees working in IT using IN.
+SELECT emp_name
+FROM employees
+WHERE dept_id IN (
+    SELECT dept_id
+    FROM departments
+    WHERE dept_name = 'IT'
+);
+
+Q23. Find all employees working in IT or HR.
+SELECT emp_name
+FROM employees
+WHERE dept_id IN (
+    SELECT dept_id
+    FROM departments
+    WHERE dept_name IN ('IT', 'HR')
+);
+
+Q24. Find employees who do not work in IT.
+SELECT emp_name
+FROM employees
+WHERE dept_id NOT IN (
+    SELECT dept_id
+    FROM departments
+    WHERE dept_name = 'IT'
+);
+
+Q25. Find the second-highest salary.
+SELECT MAX(salary) AS second_highest
+FROM employees
+WHERE salary < (
+    SELECT MAX(salary)
+    FROM employees
+);
