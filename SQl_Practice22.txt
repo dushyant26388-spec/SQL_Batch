@@ -1,0 +1,44 @@
+Q31. Find employees who earn the highest salary in their department.
+SELECT e.emp_name, e.salary, e.dept_id
+FROM employees e
+WHERE e.salary = (
+    SELECT MAX(e2.salary)
+    FROM employees e2
+    WHERE e2.dept_id = e.dept_id
+);
+
+Q32. Find employees who earn the lowest salary in their department.
+SELECT e.emp_name, e.salary, e.dept_id
+FROM employees e
+WHERE e.salary = (
+    SELECT MIN(e2.salary)
+    FROM employees e2
+    WHERE e2.dept_id = e.dept_id
+);
+
+Q33. Find employees earning more than their department average.
+SELECT e.emp_name, e.salary
+FROM employees e
+WHERE e.salary > (
+    SELECT AVG(e2.salary)
+    FROM employees e2
+    WHERE e2.dept_id = e.dept_id
+);
+
+Q34. Find departments whose total salary is greater than 100000.
+SELECT d.dept_name, SUM(e.salary) AS total_salary
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id
+GROUP BY d.dept_name
+HAVING SUM(e.salary) > 100000;
+
+Q35. Find employees who belong to departments having more than one employee.
+SELECT emp_name, dept_id
+FROM employees
+WHERE dept_id IN (
+    SELECT dept_id
+    FROM employees
+    GROUP BY dept_id
+    HAVING COUNT(*) > 1
+);
