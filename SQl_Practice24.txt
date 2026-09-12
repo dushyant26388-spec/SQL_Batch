@@ -1,0 +1,28 @@
+Q1. Find employee names and their department names.
+SELECT e.name, d.department_name
+FROM Employee e
+JOIN Department d
+ON e.department_id = d.department_id;
+
+Q2. Find employees working in the Sales department.
+SELECT e.name
+FROM Employee e
+JOIN Department d
+ON e.department_id = d.department_id
+WHERE d.department_name = 'Sales';
+
+Q3. Find the total number of employees in each department.
+SELECT department_id, COUNT(*) AS total_employees
+FROM Employee
+GROUP BY department_id;
+
+Q4. Find departments having more than 3 employees.
+SELECT department_id, COUNT(*) AS total_employees
+FROM Employee
+GROUP BY department_id
+HAVING COUNT(*) > 3;
+
+Q5. Find the highest salary in each department.
+SELECT department_id, MAX(salary) AS highest_salary
+FROM Employee
+GROUP BY department_id;
