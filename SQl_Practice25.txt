@@ -1,0 +1,31 @@
+Q6. Find the average salary in each department.
+SELECT department_id, AVG(salary) AS average_salary
+FROM Employee
+GROUP BY department_id;
+
+Q7. Find employees whose salary is greater than 50000.
+SELECT name, salary
+FROM Employee
+WHERE salary > 50000;
+
+Q8. Display all employees even if they don't have a department.
+SELECT e.name, d.department_name
+FROM Employee e
+LEFT JOIN Department d
+ON e.department_id = d.department_id;
+
+Q9. Find the employee with the highest salary.
+SELECT name, salary
+FROM Employee
+WHERE salary = (
+    SELECT MAX(salary)
+    FROM Employee
+);
+
+Q10. Find the employee with the lowest salary.
+SELECT name, salary
+FROM Employee
+WHERE salary = (
+    SELECT MIN(salary)
+    FROM Employee
+);
