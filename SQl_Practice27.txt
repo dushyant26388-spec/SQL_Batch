@@ -1,0 +1,38 @@
+Q16. Find the second-highest salary.
+SELECT MAX(salary) AS second_highest
+FROM Employee
+WHERE salary < (
+    SELECT MAX(salary)
+    FROM Employee
+);
+Q17. Find the second-lowest salary.
+SELECT MIN(salary) AS second_lowest
+FROM Employee
+WHERE salary > (
+    SELECT MIN(salary)
+    FROM Employee
+);
+Q18. Find employees who work in the IT department using a subquery.
+SELECT name
+FROM Employee
+WHERE department_id = (
+    SELECT department_id
+    FROM Department
+    WHERE department_name = 'IT'
+);
+Q19. Find employees working in IT or HR.
+SELECT name
+FROM Employee
+WHERE department_id IN (
+    SELECT department_id
+    FROM Department
+    WHERE department_name IN ('IT', 'HR')
+);
+Q20. Find employees who don't work in IT.
+SELECT name
+FROM Employee
+WHERE department_id NOT IN (
+    SELECT department_id
+    FROM Department
+    WHERE department_name = 'IT'
+);
