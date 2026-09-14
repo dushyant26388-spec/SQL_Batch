@@ -1,0 +1,40 @@
+Q26. Find employees and their managers
+SELECT e.name AS employee,
+       m.name AS manager
+FROM Employee e
+JOIN Employee m
+ON e.manager_id = m.employee_id;
+
+Q27. Find employees who earn more than their manager.
+SELECT e.name AS employee,
+       e.salary AS employee_salary,
+       m.name AS manager,
+       m.salary AS manager_salary
+FROM Employee e
+JOIN Employee m
+ON e.manager_id = m.employee_id
+WHERE e.salary > m.salary;
+
+Q28. Find all managers.
+SELECT DISTINCT m.name
+FROM Employee e
+JOIN Employee m
+ON e.manager_id = m.employee_id;
+
+Q29. Find employees earning more than their department's average salary.
+SELECT e.name, e.salary, e.department_id
+FROM Employee e
+WHERE e.salary > (
+    SELECT AVG(e2.salary)
+    FROM Employee e2
+    WHERE e2.department_id = e.department_id
+);
+
+Q30. Find the highest-paid employee in each department.
+SELECT e.name, e.salary, e.department_id
+FROM Employee e
+WHERE e.salary = (
+    SELECT MAX(e2.salary)
+    FROM Employee e2
+    WHERE e2.department_id = e.department_id
+);
