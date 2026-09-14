@@ -1,0 +1,41 @@
+Q21. Find the department name and number of employees.
+SELECT d.department_name, COUNT(e.employee_id) AS total_employees
+FROM Department d
+JOIN Employee e
+ON d.department_id = e.department_id
+GROUP BY d.department_name;
+
+Q22. Find departments having average salary greater than 60000.
+SELECT d.department_name, AVG(e.salary) AS average_salary
+FROM Department d
+JOIN Employee e
+ON d.department_id = e.department_id
+GROUP BY d.department_name
+HAVING AVG(e.salary) > 60000;
+
+Q23. Find departments where total salary is greater than 100000.
+SELECT d.department_name, SUM(e.salary) AS total_salary
+FROM Department d
+JOIN Employee e
+ON d.department_id = e.department_id
+GROUP BY d.department_name
+HAVING SUM(e.salary) > 100000;
+
+Q24. Find the department having the highest average salary.
+SELECT d.department_name, AVG(e.salary) AS average_salary
+FROM Department d
+JOIN Employee e
+ON d.department_id = e.department_id
+GROUP BY d.department_name
+ORDER BY average_salary DESC
+LIMIT 1;
+
+Q25. Find the department having the lowest average salary.
+SELECT d.department_name, AVG(e.salary) AS average_salary
+FROM Department d
+JOIN Employee e
+ON d.department_id = e.department_id
+GROUP BY d.department_name
+ORDER BY average_salary
+LIMIT 1;
+
