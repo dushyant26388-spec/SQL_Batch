@@ -1,0 +1,45 @@
+Q41. Find employees who earn more than the highest salary in the HR department.
+SELECT name, salary
+FROM Employee
+WHERE salary > (
+    SELECT MAX(e.salary)
+    FROM Employee e
+    JOIN Department d
+    ON e.department_id = d.department_id
+    WHERE d.department_name = 'HR'
+);
+
+Q42. Find employees who earn less than the lowest salary in the IT department.
+SELECT name, salary
+FROM Employee
+WHERE salary < (
+    SELECT MIN(e.salary)
+    FROM Employee e
+    JOIN Department d
+    ON e.department_id = d.department_id
+    WHERE d.department_name = 'IT'
+);
+
+Q43. Find employees who have the same department as the employee earning the highest salary.
+SELECT name, department_id
+FROM Employee
+WHERE department_id = (
+    SELECT department_id
+    FROM Employee
+    WHERE salary = (
+        SELECT MAX(salary)
+        FROM Employee
+    )
+);
+
+Q44. Find employees who have a salary equal to another employee's salary.
+SELECT DISTINCT e1.name, e1.salary
+FROM Employee e1
+JOIN Employee e2
+ON e1.salary = e2.salary
+AND e1.employee_id <> e2.employee_id;
+
+Q45. Find the total salary of each department.
+SELECT department_id, SUM(salary) AS total_salary
+FROM Employee
+GROUP BY department_id;
