@@ -1,0 +1,51 @@
+Q1. Rank all employees by salary, highest salary = rank 1.
+SELECT name, dept, salary,
+RANK() OVER(ORDER BY salary DESC) AS salary_rank
+FROM employees;
+
+Q2. Rank employees within each department by salary.
+SELECT name, dept, salary,
+RANK() OVER(
+    PARTITION BY dept
+    ORDER BY salary DESC
+) AS dept_rank
+FROM employees
+ORDER BY dept, dept_rank;
+
+Q3. Find the top earner in each department using RANK.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    RANK() OVER(
+        PARTITION BY dept
+        ORDER BY salary DESC
+    ) AS rnk
+    FROM employees
+) t
+WHERE rnk = 1;
+
+Q4. Show RANK and DENSE_RANK side by side with a duplicate salary.
+SELECT name, salary,
+RANK() OVER(ORDER BY salary DESC) AS rnk,
+DENSE_RANK() OVER(ORDER BY salary DESC) AS dense_rnk
+FROM (
+    SELECT 'Jack' AS name, 95000 AS salary
+    UNION ALL
+    SELECT 'Leo', 91000
+    UNION ALL
+    SELECT 'Alice', 90000
+    UNION ALL
+    SELECT 'Karen', 90000
+    UNION ALL
+    SELECT 'Charlie', 82000
+) t;
+
+Q5. Assign ROW_NUMBER by salary DESC and get employees on rows 4 to 6.
+SELECT *
+FROM (
+    SELECT name, dept, salary,
+    ROW_NUMBER() OVER(ORDER BY salary DESC) AS rn
+    FROM employees
+) t
+WHERE rn BETWEEN 4 AND 6;
+
