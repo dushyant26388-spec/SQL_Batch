@@ -1,0 +1,44 @@
+Q15. Divide all employees into 4 salary quartiles.
+SELECT name, salary,
+NTILE(4) OVER(
+    ORDER BY salary DESC
+) AS quartile
+FROM employees;
+Q16. Assign Top, Mid and Low performance bands within each department.
+SELECT name, dept, salary,
+CASE NTILE(3) OVER(
+    PARTITION BY dept
+    ORDER BY salary DESC
+)
+    WHEN 1 THEN 'Top'
+    WHEN 2 THEN 'Mid'
+    WHEN 3 THEN 'Low'
+END AS band
+FROM employees;
+Q17. Calculate a 3-day rolling sum of daily sales.
+SELECT day_num, sale_amount,
+SUM(sale_amount) OVER(
+    ORDER BY day_num
+    ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+) AS rolling_3day_sum
+FROM daily_sales;
+
+Q18. Calculate a 3-day centred moving average.
+SELECT day_num, sale_amount,
+ROUND(
+    AVG(sale_amount) OVER(
+        ORDER BY day_num
+        ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+    ), 1
+) AS centred_avg
+FROM daily_sales;
+
+Q19. Divide employees into salary quartiles and show the previous row's salary.
+SELECT name, salary,
+NTILE(4) OVER(
+    ORDER BY salary DESC
+) AS quartile,
+LAG(salary) OVER(
+    ORDER BY salary DESC
+) AS prev_row_salary
+FROM employees;
