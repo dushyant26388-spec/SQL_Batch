@@ -1,0 +1,47 @@
+Q11. Calculate month-over-month sales growth for each employee.
+SELECT emp_name, sale_month, amount,
+amount - LAG(amount) OVER(
+    PARTITION BY emp_name
+    ORDER BY sale_id
+) AS mom_growth
+FROM sales;
+
+Q12. Show previous, current and next month's sales in one row.
+SELECT emp_name, sale_month, amount,
+LAG(amount) OVER(
+    PARTITION BY emp_name
+    ORDER BY sale_id
+) AS prev_m,
+amount AS curr_m,
+LEAD(amount) OVER(
+    PARTITION BY emp_name
+    ORDER BY sale_id
+) AS next_m
+FROM sales
+WHERE emp_name = 'Alice';
+
+Q13. Find months where Alice's sales increased compared to the previous month.
+SELECT emp_name, sale_month, amount
+FROM (
+    SELECT emp_name, sale_month, amount,
+    LAG(amount) OVER(
+        PARTITION BY emp_name
+        ORDER BY sale_id
+    ) AS prev
+    FROM sales
+    WHERE emp_name = 'Alice'
+) t
+WHERE amount > prev;
+
+Q14. For each employee, show previous hire year in the same department and the gap in years.
+SELECT name, dept, hire_year,
+LAG(hire_year) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS prev_hire,
+hire_year - LAG(hire_year) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS gap_years
+FROM employees
+ORDER BY dept, hire_year;
