@@ -1,0 +1,36 @@
+Q26. Show the running salary total for the whole company ordered by hire year.
+SELECT name, hire_year, salary,
+SUM(salary) OVER(
+    ORDER BY hire_year
+) AS running_salary
+FROM employees;
+
+Q27. Show the running employee count ordered by hire year.
+SELECT name, hire_year,
+COUNT(*) OVER(
+    ORDER BY hire_year
+) AS employees_so_far
+FROM employees;
+
+Q28. Show the running maximum salary ordered by hire year.
+SELECT name, hire_year, salary,
+MAX(salary) OVER(
+    ORDER BY hire_year
+) AS running_max
+FROM employees;
+
+Q29. Show the running minimum salary ordered by hire year.
+SELECT name, hire_year, salary,
+MIN(salary) OVER(
+    ORDER BY hire_year
+) AS running_min
+FROM employees;
+
+Q30. Show the running average salary ordered by hire year.
+SELECT name, hire_year, salary,
+ROUND(
+    AVG(salary) OVER(
+        ORDER BY hire_year
+    ), 0
+) AS running_avg
+FROM employees;
