@@ -1,0 +1,30 @@
+Q21. Show the total salary of each department on every employee row.
+SELECT name, dept, salary,
+SUM(salary) OVER(PARTITION BY dept) AS dept_total
+FROM employees;
+
+Q22. Show the average salary of each department on every employee row.
+SELECT name, dept, salary,
+ROUND(AVG(salary) OVER(PARTITION BY dept), 0) AS dept_avg
+FROM employees;
+
+Q23. Show the maximum and minimum salary of each department.
+SELECT name, dept, salary,
+MAX(salary) OVER(PARTITION BY dept) AS dept_max,
+MIN(salary) OVER(PARTITION BY dept) AS dept_min
+FROM employees;
+
+Q24. Find the difference between each employee's salary and the department maximum salary.
+SELECT name, dept, salary,
+MAX(salary) OVER(PARTITION BY dept) - salary AS difference
+FROM employees;
+
+Q25. Find each employee's percentage of their department's total salary.
+SELECT name, dept, salary,
+ROUND(
+    salary * 100.0 /
+    SUM(salary) OVER(PARTITION BY dept),
+    2
+) AS salary_percentage
+FROM employees;
+
