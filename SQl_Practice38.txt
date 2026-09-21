@@ -1,0 +1,56 @@
+Q31. Find the 3rd highest distinct salary using DENSE_RANK.
+SELECT salary
+FROM (
+    SELECT salary,
+    DENSE_RANK() OVER(
+        ORDER BY salary DESC
+    ) AS dr
+    FROM employees
+) t
+WHERE dr = 3;
+
+Q32. Find the top 2 earners from each department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    RANK() OVER(
+        PARTITION BY dept
+        ORDER BY salary DESC
+    ) AS rnk
+    FROM employees
+) t
+WHERE rnk <= 2;
+
+Q33. Find the employee with the highest salary in the company using RANK.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    RANK() OVER(
+        ORDER BY salary DESC
+    ) AS rnk
+    FROM employees
+) t
+WHERE rnk = 1;
+
+Q34. Find the 3rd highest salary row using ROW_NUMBER.
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+    ROW_NUMBER() OVER(
+        ORDER BY salary DESC
+    ) AS rn
+    FROM employees
+) t
+WHERE rn = 3;
+Q35. Find the latest hired employee from each department.
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+    ROW_NUMBER() OVER(
+        PARTITION BY dept
+        ORDER BY hire_year DESC
+    ) AS rn
+    FROM employees
+) t
+WHERE rn = 1;
+
