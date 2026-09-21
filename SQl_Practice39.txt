@@ -1,0 +1,36 @@
+Q36. Show each employee's previous salary when employees are ordered by salary.
+SELECT name, salary,
+LAG(salary) OVER(
+    ORDER BY salary DESC
+) AS previous_salary
+FROM employees;
+
+Q37. Show each employee's next salary when employees are ordered by salary.
+SELECT name, salary,
+LEAD(salary) OVER(
+    ORDER BY salary DESC
+) AS next_salary
+FROM employees;
+
+Q38. Show the salary difference between the current employee and the previous employee.
+SELECT name, salary,
+salary - LAG(salary) OVER(
+    ORDER BY salary DESC
+) AS salary_difference
+FROM employees;
+
+Q39. Show the previous employee's hire year within each department.
+SELECT name, dept, hire_year,
+LAG(hire_year) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS previous_hire_year
+FROM employees;
+
+Q40. Show the next employee's hire year within each department.
+SELECT name, dept, hire_year,
+LEAD(hire_year) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS next_hire_year
+FROM employees;
