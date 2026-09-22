@@ -1,0 +1,43 @@
+Q41. Show the difference between the current hire year and the previous hire year.
+SELECT name, dept, hire_year,
+hire_year - LAG(hire_year) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS gap_years
+FROM employees;
+
+Q42. Divide employees into 5 salary performance groups.
+SELECT name, salary,
+NTILE(5) OVER(
+    ORDER BY salary DESC
+) AS performance_tier
+FROM employees;
+
+Q43. Divide employees into 2 salary groups: Top Half and Bottom Half.
+SELECT name, salary,
+CASE NTILE(2) OVER(
+    ORDER BY salary DESC
+)
+    WHEN 1 THEN 'Top Half'
+    WHEN 2 THEN 'Bottom Half'
+END AS salary_group
+FROM employees;
+
+Q44. Calculate a 3-day moving average of sales.
+SELECT day_num, sale_amount,
+ROUND(
+    AVG(sale_amount) OVER(
+        ORDER BY day_num
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ), 1
+) AS moving_avg
+FROM daily_sales;
+
+Q45. Calculate a 3-day moving sum of sales.
+SELECT day_num, sale_amount,
+SUM(sale_amount) OVER(
+    ORDER BY day_num
+    ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+) AS moving_sum
+FROM daily_sales;
+
