@@ -1,0 +1,56 @@
+Q51. Calculate a centred 3-day moving average.
+SELECT day_num, sale_amount,
+ROUND(
+    AVG(sale_amount) OVER(
+        ORDER BY day_num
+        ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+    ), 1
+) AS centred_3day_avg
+FROM daily_sales;
+
+Q52. Calculate a centred 5-day moving sum.
+SELECT day_num, sale_amount,
+SUM(sale_amount) OVER(
+    ORDER BY day_num
+    ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING
+) AS centred_5day_sum
+FROM daily_sales;
+
+Q53. Find the minimum sales value from the previous, current and next row.
+SELECT day_num, sale_amount,
+MIN(sale_amount) OVER(
+    ORDER BY day_num
+    ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+) AS local_min
+FROM daily_sales;
+
+Q54. Calculate month-over-month percentage growth.
+SELECT emp_name, sale_month, amount,
+LAG(amount) OVER(
+    PARTITION BY emp_name
+    ORDER BY sale_id
+) AS prev_month,
+amount - LAG(amount) OVER(
+    PARTITION BY emp_name
+    ORDER BY sale_id
+) AS growth,
+ROUND(
+    (amount - LAG(amount) OVER(
+        PARTITION BY emp_name
+        ORDER BY sale_id
+    )) * 100.0 /
+    LAG(amount) OVER(
+        PARTITION BY emp_name
+        ORDER BY sale_id
+    ), 1
+) AS pct_growth
+FROM sales;
+
+Q55. Find employees whose salary is higher than the company average.
+SELECT name, dept, salary, company_avg
+FROM (
+    SELECT name, dept, salary,
+    ROUND(AVG(salary) OVER(), 0) AS company_avg
+    FROM employees
+) t
+WHERE salary > company_avg;
