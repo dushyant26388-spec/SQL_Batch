@@ -1,0 +1,53 @@
+Q56. Remove duplicate employees using ROW_NUMBER and keep the first row.
+SELECT *
+FROM (
+    SELECT *,
+    ROW_NUMBER() OVER(
+        PARTITION BY dept
+        ORDER BY emp_id
+    ) AS rn
+    FROM employees
+) t
+WHERE rn = 1;
+
+Q57. Find the top 3 employees in each department using RANK.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    RANK() OVER(
+        PARTITION BY dept
+        ORDER BY salary DESC
+    ) AS rnk
+    FROM employees
+) t
+WHERE rnk <= 3;
+
+Q58. Show each employee's rank, dense rank and row number based on company salary.
+SELECT name, salary,
+RANK() OVER(
+    ORDER BY salary DESC
+) AS rnk,
+DENSE_RANK() OVER(
+    ORDER BY salary DESC
+) AS dense_rnk,
+ROW_NUMBER() OVER(
+    ORDER BY salary DESC
+) AS row_num
+FROM employees;
+
+Q59. Show each employee's department rank and company rank together.
+SELECT name, dept, salary,
+RANK() OVER(
+    PARTITION BY dept
+    ORDER BY salary DESC
+) AS dept_rank,
+RANK() OVER(
+    ORDER BY salary DESC
+) AS company_rank
+FROM employees;
+
+Q60. Show each employee's department salary total and company salary total.
+SELECT name, dept, salary,
+SUM(salary) OVER(PARTITION BY dept) AS dept_total,
+SUM(salary) OVER() AS company_total
+FROM employees;
