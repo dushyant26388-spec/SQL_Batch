@@ -1,0 +1,33 @@
+Q66. Find each employee's salary difference from the department average.
+SELECT name, dept, salary,
+salary - AVG(salary) OVER(
+    PARTITION BY dept
+) AS difference
+FROM employees;
+Q67. Find each employee's salary difference from the company average.
+SELECT name, salary,
+salary - AVG(salary) OVER() AS difference
+FROM employees;
+Q68. Find each department's total salary and employee count.
+SELECT name, dept, salary,
+SUM(salary) OVER(
+    PARTITION BY dept
+) AS dept_total,
+COUNT(*) OVER(
+    PARTITION BY dept
+) AS dept_count
+FROM employees;
+Q69. Find each employee's salary rank within their department.
+SELECT name, dept, salary,
+RANK() OVER(
+    PARTITION BY dept
+    ORDER BY salary DESC
+) AS dept_rank
+FROM employees;
+Q70. Find each employee's dense salary rank within their department.
+SELECT name, dept, salary,
+DENSE_RANK() OVER(
+    PARTITION BY dept
+    ORDER BY salary DESC
+) AS dept_rank
+FROM employees;
