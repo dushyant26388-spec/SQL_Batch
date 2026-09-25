@@ -1,0 +1,35 @@
+Q61. Find the running total of salary within each department.
+SELECT name, dept, salary,
+SUM(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS running_total
+FROM employees;
+Q62. Find the running average salary within each department.
+SELECT name, dept, salary,
+AVG(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS running_avg
+FROM employees;
+Q63. Find the running employee count within each department.
+SELECT name, dept, hire_year,
+COUNT(*) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS running_count
+FROM employees;
+Q64. Find the highest salary so far within each department.
+SELECT name, dept, salary,
+MAX(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS highest_so_far
+FROM employees;
+Q65. Find the lowest salary so far within each department.
+SELECT name, dept, salary,
+MIN(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS lowest_so_far
+FROM employees;
