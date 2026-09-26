@@ -1,0 +1,51 @@
+Q71. Give every employee a unique number within their department based on salary.
+SELECT name, dept, salary,
+ROW_NUMBER() OVER(
+    PARTITION BY dept
+    ORDER BY salary DESC
+) AS row_num
+FROM employees;
+Q72. Find employees ranked 2nd in each department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    RANK() OVER(
+        PARTITION BY dept
+        ORDER BY salary DESC
+    ) AS rnk
+    FROM employees
+) t
+WHERE rnk = 2;
+Q73. Find employees ranked 3rd in each department using DENSE_RANK.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    DENSE_RANK() OVER(
+        PARTITION BY dept
+        ORDER BY salary DESC
+    ) AS rnk
+    FROM employees
+) t
+WHERE rnk = 3;
+Q74. Find the highest-paid employee from every department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    ROW_NUMBER() OVER(
+        PARTITION BY dept
+        ORDER BY salary DESC
+    ) AS rn
+    FROM employees
+) t
+WHERE rn = 1;
+Q75. Find the lowest-paid employee from every department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    ROW_NUMBER() OVER(
+        PARTITION BY dept
+        ORDER BY salary
+    ) AS rn
+    FROM employees
+) t
+WHERE rn = 1;
