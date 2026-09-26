@@ -1,0 +1,43 @@
+Q76. Find the first employee hired in each department.
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+    ROW_NUMBER() OVER(
+        PARTITION BY dept
+        ORDER BY hire_year
+    ) AS rn
+    FROM employees
+) t
+WHERE rn = 1;
+Q77. Find the last employee hired in each department.
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+    ROW_NUMBER() OVER(
+        PARTITION BY dept
+        ORDER BY hire_year DESC
+    ) AS rn
+    FROM employees
+) t
+WHERE rn = 1;
+Q78. Show the previous employee's salary within each department.
+SELECT name, dept, salary,
+LAG(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS previous_salary
+FROM employees;
+Q79. Show the next employee's salary within each department.
+SELECT name, dept, salary,
+LEAD(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS next_salary
+FROM employees;
+Q80. Find the difference between an employee's salary and the previous employee's salary.
+SELECT name, dept, salary,
+salary - LAG(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS salary_difference
+FROM employees;
