@@ -1,0 +1,38 @@
+Q86. Divide employees into 3 groups within each department.
+SELECT name, dept, salary,
+NTILE(3) OVER(
+    PARTITION BY dept
+    ORDER BY salary DESC
+) AS salary_group
+FROM employees;
+
+Q87. Calculate a 2-row rolling salary total.
+SELECT name, salary,
+SUM(salary) OVER(
+    ORDER BY hire_year
+    ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+) AS rolling_total
+FROM employees;
+
+Q88. Calculate a 3-row rolling salary average.
+SELECT name, salary,
+AVG(salary) OVER(
+    ORDER BY hire_year
+    ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+) AS rolling_avg
+FROM employees;
+
+Q89. Find the maximum salary from the current and previous row.
+SELECT name, salary,
+MAX(salary) OVER(
+    ORDER BY hire_year
+    ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+) AS max_salary
+FROM employees;
+Q90. Find the minimum salary from the current and previous row.
+SELECT name, salary,
+MIN(salary) OVER(
+    ORDER BY hire_year
+    ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+) AS min_salary
+FROM employees;
