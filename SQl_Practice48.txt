@@ -1,0 +1,47 @@
+Q81. Find the difference between an employee's salary and the next employee's salary.
+SELECT name, dept, salary,
+LEAD(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) - salary AS salary_difference
+FROM employees;
+Q82. Show the previous and next salary for every employee.
+SELECT name, dept, salary,
+LAG(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS previous_salary,
+LEAD(salary) OVER(
+    PARTITION BY dept
+    ORDER BY hire_year
+) AS next_salary
+FROM employees;
+Q83. Find employees whose salary increased compared with the previous employee.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    LAG(salary) OVER(
+        PARTITION BY dept
+        ORDER BY hire_year
+    ) AS previous_salary
+    FROM employees
+) t
+WHERE salary > previous_salary;
+Q84. Find employees whose salary decreased compared with the previous employee.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+    LAG(salary) OVER(
+        PARTITION BY dept
+        ORDER BY hire_year
+    ) AS previous_salary
+    FROM employees
+) t
+WHERE salary < previous_salary;
+Q85. Divide employees into 4 salary groups.
+SELECT name, salary,
+NTILE(4) OVER(
+    ORDER BY salary DESC
+) AS salary_group
+FROM employees;
+
