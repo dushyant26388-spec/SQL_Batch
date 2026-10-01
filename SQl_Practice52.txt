@@ -1,0 +1,53 @@
+Q101. Find the second-highest salary in each department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           DENSE_RANK() OVER(
+               PARTITION BY dept
+               ORDER BY salary DESC
+           ) AS rnk
+    FROM employees
+) t
+WHERE rnk = 2;
+
+Q102. Find the third-highest salary in each department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           DENSE_RANK() OVER(
+               PARTITION BY dept
+               ORDER BY salary DESC
+           ) AS rnk
+    FROM employees
+) t
+WHERE rnk = 3;
+
+Q103. Find the top 3 distinct salaries in each department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           DENSE_RANK() OVER(
+               PARTITION BY dept
+               ORDER BY salary DESC
+           ) AS rnk
+    FROM employees
+) t
+WHERE rnk <= 3;
+
+Q104. Find employees who have the same salary as another employee in their department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           COUNT(*) OVER(
+               PARTITION BY dept, salary
+           ) AS salary_count
+    FROM employees
+) t
+WHERE salary_count > 1;
+
+Q105. Find the number of employees earning each salary within every department.
+SELECT name, dept, salary,
+       COUNT(*) OVER(
+           PARTITION BY dept, salary
+       ) AS salary_count
+FROM employees;
