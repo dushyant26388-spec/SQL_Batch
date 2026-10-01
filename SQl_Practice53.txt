@@ -1,0 +1,49 @@
+Q106. Find the highest salary and employee name in each department using ROW_NUMBER.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept
+               ORDER BY salary DESC
+           ) AS rn
+    FROM employees
+) t
+WHERE rn = 1;
+
+Q107. Find the second employee hired in each department.
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept
+               ORDER BY hire_year
+           ) AS rn
+    FROM employees
+) t
+WHERE rn = 2;
+
+Q108. Find the third employee hired in each department.
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept
+               ORDER BY hire_year
+           ) AS rn
+    FROM employees
+) t
+WHERE rn = 3;
+
+Q109. Find the salary difference between each employee and the highest-paid employee in their department.
+SELECT name, dept, salary,
+       MAX(salary) OVER(
+           PARTITION BY dept
+       ) - salary AS difference
+FROM employees;
+
+Q110. Find the salary difference between each employee and the lowest-paid employee in their department.
+SELECT name, dept, salary,
+       salary - MIN(salary) OVER(
+           PARTITION BY dept
+       ) AS difference
+FROM employees;
