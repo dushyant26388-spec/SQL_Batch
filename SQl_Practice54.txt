@@ -1,0 +1,47 @@
+Q111. Find employees whose salary is greater than the previous employee's salary in their department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           LAG(salary) OVER(
+               PARTITION BY dept
+               ORDER BY hire_year
+           ) AS previous_salary
+    FROM employees
+) t
+WHERE salary > previous_salary;
+Q112. Find employees whose salary is lower than the next employee's salary in their department.
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           LEAD(salary) OVER(
+               PARTITION BY dept
+               ORDER BY hire_year
+           ) AS next_salary
+    FROM employees
+) t
+WHERE salary < next_salary;
+Q113. Show the salary change from the previous employee within each department.
+SELECT name, dept, salary,
+       salary - LAG(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+       ) AS salary_change
+FROM employees;
+Q114. Show the salary change compared with the next employee within each department.
+SELECT name, dept, salary,
+       LEAD(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+       ) - salary AS salary_change
+FROM employees;
+Q115. Find the previous hire year and next hire year for every employee.
+SELECT name, dept, hire_year,
+       LAG(hire_year) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+       ) AS previous_hire,
+       LEAD(hire_year) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+       ) AS next_hire
+FROM employees;
