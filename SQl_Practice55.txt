@@ -1,0 +1,50 @@
+Q116. Find the gap between an employee's hire year and the next employee's hire year.
+SELECT name, dept, hire_year,
+       LEAD(hire_year) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+       ) - hire_year AS year_gap
+FROM employees;
+Q117. Find the running salary total separately for every department.
+SELECT name, dept, hire_year, salary,
+       SUM(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_total
+FROM employees;
+Q118. Find a 3-employee moving average of salary within each department.
+SELECT name, dept, salary,
+       AVG(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+           ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+       ) AS moving_avg
+FROM employees;
+Q119. Divide employees into 4 salary groups within each department.
+SELECT name, dept, salary,
+       NTILE(4) OVER(
+           PARTITION BY dept
+           ORDER BY salary DESC
+       ) AS salary_group
+FROM employees;
+Q120. Show each employee's company rank, department rank, salary percentage of department total, and department average.
+SELECT name,
+       dept,
+       salary,
+       RANK() OVER(
+           ORDER BY salary DESC
+       ) AS company_rank,
+       RANK() OVER(
+           PARTITION BY dept
+           ORDER BY salary DESC
+       ) AS dept_rank,
+       ROUND(
+           salary * 100.0 /
+           SUM(salary) OVER(PARTITION BY dept),
+           2
+       ) AS dept_salary_percentage,
+       AVG(salary) OVER(
+           PARTITION BY dept
+       ) AS dept_avg
+FROM employees;
