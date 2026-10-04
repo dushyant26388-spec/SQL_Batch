@@ -1,0 +1,26 @@
+Q1. Find the total salary of all employees.
+SELECT name, salary,
+SUM(salary) OVER() AS total_salary
+FROM employees;
+
+Q2. Find the average salary of all employees.
+SELECT name, salary,
+AVG(salary) OVER() AS average_salary
+FROM employees;
+
+Q3. Find the maximum salary of all employees.
+SELECT name, salary,
+MAX(salary) OVER() AS maximum_salary
+FROM employees;
+
+Q4. Find the minimum salary of all employees.
+SELECT name, salary,
+MIN(salary) OVER() AS minimum_salary
+FROM employees;
+
+Q5. Find the total salary of each department.
+SELECT name, dept, salary,
+SUM(salary) OVER(
+    PARTITION BY dept
+) AS dept_total
+FROM employees;
