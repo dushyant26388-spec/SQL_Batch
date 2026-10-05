@@ -1,0 +1,30 @@
+Q6. Find the average salary of each department.
+SELECT name, dept, salary,
+AVG(salary) OVER(
+    PARTITION BY dept
+) AS dept_average
+FROM employees;
+Q7. Find the maximum salary of each department.
+SELECT name, dept, salary,
+MAX(salary) OVER(
+    PARTITION BY dept
+) AS dept_max_salary
+FROM employees;
+Q8. Find the minimum salary of each department.
+SELECT name, dept, salary,
+MIN(salary) OVER(
+    PARTITION BY dept
+) AS dept_min_salary
+FROM employees;
+Q9. Count employees in each department.
+SELECT name, dept,
+COUNT(*) OVER(
+    PARTITION BY dept
+) AS employee_count
+FROM employees;
+Q10. Find the difference between salary and the highest salary in the department.
+SELECT name, dept, salary,
+MAX(salary) OVER(
+    PARTITION BY dept
+) - salary AS difference
+FROM employees;
