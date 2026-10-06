@@ -1,0 +1,36 @@
+Q11. Find the difference between salary and the lowest salary in the department.
+SELECT name, dept, salary,
+salary - MIN(salary) OVER(
+    PARTITION BY dept
+) AS difference
+FROM employees;
+
+Q12. Find the percentage of each employee's salary from the department total.
+SELECT name, dept, salary,
+salary * 100.0 /
+SUM(salary) OVER(
+    PARTITION BY dept
+) AS percentage
+FROM employees;
+
+Q13. Find the running total of salary.
+SELECT name, salary,
+SUM(salary) OVER(
+    ORDER BY hire_year
+) AS running_total
+FROM employees;
+
+Q14. Find the running average of salary.
+SELECT name, salary,
+AVG(salary) OVER(
+    ORDER BY hire_year
+) AS running_average
+FROM employees;
+
+Q15. Give a rank to employees based on salary.
+SELECT name, salary,
+RANK() OVER(
+    ORDER BY salary DESC
+) AS salary_rank
+FROM employees;
+
