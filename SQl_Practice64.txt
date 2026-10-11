@@ -1,0 +1,41 @@
+Q1. Show each employee's salary and the difference from the company’s highest salary.
+
+SELECT name, salary,
+       MAX(salary) OVER() - salary AS salary_gap
+FROM employees;
+
+Q2. Count how many employees earn the same salary.
+
+SELECT name, salary,
+       COUNT(*) OVER(PARTITION BY salary) AS same_salary_count
+FROM employees;
+
+Q3. Find employees who share the highest salary.
+
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+           RANK() OVER(ORDER BY salary DESC) AS rnk
+    FROM employees
+) t
+WHERE rnk = 1;
+
+Q4. Find the second-highest distinct salary.
+
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+           DENSE_RANK() OVER(ORDER BY salary DESC) AS rnk
+    FROM employees
+) t
+WHERE rnk = 2;
+
+Q5. Find the third-highest distinct salary.
+
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+           DENSE_RANK() OVER(ORDER BY salary DESC) AS rnk
+    FROM employees
+) t
+WHERE rnk = 3;
