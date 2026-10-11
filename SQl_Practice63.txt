@@ -1,0 +1,48 @@
+Q16. Find the highest salary seen so far according to hire year.
+
+SELECT name, hire_year, salary,
+       MAX(salary) OVER(
+           ORDER BY hire_year
+       ) AS highest_so_far
+FROM employees;
+
+Q17. Find the lowest salary seen so far according to hire year.
+
+SELECT name, hire_year, salary,
+       MIN(salary) OVER(
+           ORDER BY hire_year
+       ) AS lowest_so_far
+FROM employees;
+
+Q18. Show both company rank and department rank for every employee.
+
+SELECT name, dept, salary,
+       RANK() OVER(
+           ORDER BY salary DESC
+       ) AS company_rank,
+       RANK() OVER(
+           PARTITION BY dept
+           ORDER BY salary DESC
+       ) AS dept_rank
+FROM employees;
+
+Q19. Show the company average salary and department average salary for every employee.
+
+SELECT name, dept, salary,
+       AVG(salary) OVER() AS company_average,
+       AVG(salary) OVER(
+           PARTITION BY dept
+       ) AS department_average
+FROM employees;
+
+Q20. Find employees whose salary is greater than their department average.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           AVG(salary) OVER(
+               PARTITION BY dept
+           ) AS dept_avg
+    FROM employees
+) t
+WHERE sal
