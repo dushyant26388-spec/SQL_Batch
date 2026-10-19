@@ -1,0 +1,57 @@
+Q10. Find employees hired most recently in each department.
+
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept
+               ORDER BY hire_year DESC
+           ) AS rn
+    FROM employees
+) t
+WHERE rn = 1;
+
+Q11. Show each employee's previous hire year within their department.
+
+SELECT name, dept, hire_year,
+       LAG(hire_year) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+       ) AS previous_hire_year
+FROM employees;
+
+Q12. Show each employee's next hire year within their department.
+
+SELECT name, dept, hire_year,
+       LEAD(hire_year) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+       ) AS next_hire_year
+FROM employees;
+
+Q13. Calculate the number of years between consecutive hires in each department.
+
+SELECT name, dept, hire_year,
+       hire_year - LAG(hire_year) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year
+       ) AS year_gap
+FROM employees;
+
+Q14. Show each employee's salary as a percentage of the company's total salary.
+
+SELECT name, salary,
+       ROUND(
+           salary * 100.0 / SUM(salary) OVER(),
+           2
+       ) AS salary_percentage
+FROM employees;
+
+Q15. Give employees a unique number ordered by hire year.
+
+SELECT name, hire_year,
+       ROW_NUMBER() OVER(
+           ORDER BY hire_year
+       ) AS employee_number
+FROM employees;
+
