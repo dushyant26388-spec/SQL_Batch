@@ -1,0 +1,49 @@
+Q16. Divide all employees into four groups based on salary, from highest to lowest.
+
+SELECT name, salary,
+       NTILE(4) OVER(
+           ORDER BY salary DESC
+       ) AS salary_group
+FROM employees;
+
+Q17. Show the total salary of the current employee and the previous employee.
+
+SELECT name, hire_year, salary,
+       SUM(salary) OVER(
+           ORDER BY hire_year
+           ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+       ) AS two_employee_total
+FROM employees;
+
+Q18. Calculate the average salary of the current employee and the next employee.
+
+SELECT name, hire_year, salary,
+       AVG(salary) OVER(
+           ORDER BY hire_year
+           ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING
+       ) AS two_employee_avg
+FROM employees;
+
+Q19. Find employees whose salary is equal to the highest salary in their department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           MAX(salary) OVER(
+               PARTITION BY dept
+           ) AS highest_salary
+    FROM employees
+) t
+WHERE salary = highest_salary;
+
+Q20. Find employees whose salary is equal to the lowest salary in their department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           MIN(salary) OVER(
+               PARTITION BY dept
+           ) AS lowest_salary
+    FROM employees
+) t
+WHERE salary = lowest_salary;
