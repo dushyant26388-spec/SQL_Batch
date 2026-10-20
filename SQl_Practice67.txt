@@ -1,0 +1,46 @@
+Q1. Find the salary rank of each employee within their department, with ties receiving the same rank.
+
+SELECT name, dept, salary,
+       RANK() OVER(
+           PARTITION BY dept
+           ORDER BY salary DESC
+       ) AS salary_rank
+FROM employees;
+
+Q2. Find the second employee in each department based on hire year.
+
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept
+               ORDER BY hire_year
+           ) AS rn
+    FROM employees
+) t
+WHERE rn = 2;
+
+Q3. Find employees whose salary is equal to the previous employee's salary.
+
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+           LAG(salary) OVER(
+               ORDER BY hire_year
+           ) AS previous_salary
+    FROM employees
+) t
+WHERE salary = previous_salary;
+
+Q4. Find the difference between each employee's salary and the company’s highest salary.
+
+SELECT name, salary,
+       MAX(salary) OVER() - salary AS salary_gap
+FROM employees;
+
+Q5. Find the number of employees earning more than each employee.
+
+SELECT name, salary,
+       COUNT(*) OVER() -
+       ROW_NUMBER() OVER(ORDER BY salary DESC) AS employees_below
+FROM employees;
