@@ -1,0 +1,55 @@
+Q11. Find the second-highest distinct salary in the company.
+
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+           DENSE_RANK() OVER(
+               ORDER BY salary DESC
+           ) AS salary_rank
+    FROM employees
+) t
+WHERE salary_rank = 2;
+
+Q12. Find employees who have the same hire year.
+
+SELECT name, hire_year
+FROM (
+    SELECT name, hire_year,
+           COUNT(*) OVER(
+               PARTITION BY hire_year
+           ) AS hire_count
+    FROM employees
+) t
+WHERE hire_count > 1;
+
+Q13. Find each employee's salary as a percentage of the company’s total salary.
+
+SELECT name, salary,
+       ROUND(
+           salary * 100.0 / SUM(salary) OVER(),
+           2
+       ) AS salary_percentage
+FROM employees;
+
+Q14. Calculate the running total of employees hired, ordered by hire year.
+
+SELECT name, hire_year,
+       COUNT(*) OVER(
+           ORDER BY hire_year, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_employee_count
+FROM employees;
+
+Q15. Find the top two salaries in each department, including ties.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           RANK() OVER(
+               PARTITION BY dept
+               ORDER BY salary DESC
+           ) AS salary_rank
+    FROM employees
+) t
+WHERE salary_rank <= 2;
+
