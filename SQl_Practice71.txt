@@ -1,0 +1,30 @@
+1. Display each employee's salary and the highest salary in the company.
+
+SELECT name, salary,
+       MAX(salary) OVER() AS highest_salary
+FROM employees;
+
+Q2. Display each employee's salary and the lowest salary in their department.
+
+SELECT name, dept, salary,
+       MIN(salary) OVER(PARTITION BY dept) AS lowest_dept_salary
+FROM employees;
+
+Q3. Count employees in each department without grouping the rows.
+
+SELECT name, dept,
+       COUNT(*) OVER(PARTITION BY dept) AS dept_count
+FROM employees;
+
+Q4. Display the previous employee's name based on hire year.
+
+SELECT name, hire_year,
+       LAG(name) OVER(ORDER BY hire_year, name) AS previous_employee
+FROM employees;
+
+Q5. Display the next employee's name based on hire year.
+
+SELECT name, hire_year,
+       LEAD(name) OVER(ORDER BY hire_year, name) AS next_employee
+FROM employees;
+
