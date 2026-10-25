@@ -1,0 +1,32 @@
+Q6. Assign a unique row number to employees ordered by name.
+
+SELECT name,
+       ROW_NUMBER() OVER(ORDER BY name) AS row_num
+FROM employees;
+
+Q7. Rank employees by salary from lowest to highest.
+
+SELECT name, salary,
+       RANK() OVER(ORDER BY salary) AS salary_rank
+FROM employees;
+
+Q8. Assign dense ranks based on hire year, earliest first.
+
+SELECT name, hire_year,
+       DENSE_RANK() OVER(ORDER BY hire_year) AS hire_rank
+FROM employees;
+
+Q9. Display each employee's salary and the total salary of their department.
+
+SELECT name, dept, salary,
+       SUM(salary) OVER(PARTITION BY dept) AS dept_total_salary
+FROM employees;
+
+Q10. Calculate a running total of salaries ordered from lowest to highest.
+
+SELECT name, salary,
+       SUM(salary) OVER(
+           ORDER BY salary, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_salary
+FROM employees;
