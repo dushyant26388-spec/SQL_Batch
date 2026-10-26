@@ -1,0 +1,40 @@
+Q11. Display the difference between an employee's salary and the previous employee's salary.
+
+SELECT name, salary,
+       salary - LAG(salary) OVER(ORDER BY hire_year, name) AS salary_difference
+FROM employees;
+
+
+Q12. Display each employee's hire year and the earliest hire year in the company.
+
+SELECT name, hire_year,
+       MIN(hire_year) OVER() AS earliest_hire_year
+FROM employees;
+
+
+Q13. Find the number of employees hired in each year.
+
+SELECT name, hire_year,
+       COUNT(*) OVER(PARTITION BY hire_year) AS employees_hired_that_year
+FROM employees;
+
+
+Q14. Divide employees into four groups based on salary, highest first.
+
+SELECT name, salary,
+       NTILE(4) OVER(ORDER BY salary DESC) AS salary_group
+FROM employees;
+
+
+Q15. Display the first employee alphabetically in each department.
+
+SELECT name, dept
+FROM (
+    SELECT name, dept,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept ORDER BY name
+           ) AS rn
+    FROM employees
+) AS e
+WHERE rn = 1;
+
