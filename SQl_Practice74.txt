@@ -1,0 +1,48 @@
+Q16. Display the most recently hired employee in each department.
+
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept ORDER BY hire_year DESC, name
+           ) AS rn
+    FROM employees
+) AS e
+WHERE rn = 1;
+
+
+Q17. Display employees whose salary is higher than the previous employee's salary in the company.
+
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+           LAG(salary) OVER(ORDER BY hire_year, name) AS previous_salary
+    FROM employees
+) AS e
+WHERE salary > previous_salary;
+
+
+Q18. Display each employee's salary and the next employee's salary when ordered by salary.
+
+SELECT name, salary,
+       LEAD(salary) OVER(ORDER BY salary, name) AS next_salary
+FROM employees;
+
+
+Q19. Calculate the running count of employees ordered by name.
+
+SELECT name,
+       COUNT(*) OVER(
+           ORDER BY name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_count
+FROM employees;
+
+
+Q20. Display each employee's rank within their department based on hire year, earliest first.
+
+SELECT name, dept, hire_year,
+       RANK() OVER(
+           PARTITION BY dept ORDER BY hire_year
+       ) AS dept_hire_rank
+FROM employees;
