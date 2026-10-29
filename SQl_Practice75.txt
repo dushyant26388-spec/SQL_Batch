@@ -1,0 +1,36 @@
+Q1. Display the highest salary seen so far when employees are ordered by hire year.
+
+SELECT name, hire_year, salary,
+       MAX(salary) OVER(
+           ORDER BY hire_year, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS highest_salary_so_far
+FROM employees;
+
+Q2. Display the lowest salary seen so far when employees are ordered by hire year.
+
+SELECT name, hire_year, salary,
+       MIN(salary) OVER(
+           ORDER BY hire_year, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS lowest_salary_so_far
+FROM employees;
+
+Q3. Show the total salary of employees hired in the same year.
+
+SELECT name, hire_year, salary,
+       SUM(salary) OVER(PARTITION BY hire_year) AS year_total_salary
+FROM employees;
+
+Q4. Display the number of employees hired before each employee.
+
+SELECT name, hire_year,
+       ROW_NUMBER() OVER(ORDER BY hire_year, name) - 1 AS employees_before
+FROM employees;
+
+Q5. Display each employee's salary and the difference from the department's lowest salary.
+
+SELECT name, dept, salary,
+       salary - MIN(salary) OVER(PARTITION BY dept) AS difference_from_lowest
+FROM employees;
+
