@@ -1,0 +1,38 @@
+Q6. Find employees who have the same salary as the employee hired immediately before them.
+
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+           LAG(salary) OVER(ORDER BY hire_year, name) AS previous_salary
+    FROM employees
+) AS e
+WHERE salary = previous_salary;
+
+Q7. Display the first and last hire years for each department.
+
+SELECT name, dept, hire_year,
+       MIN(hire_year) OVER(PARTITION BY dept) AS first_hire_year,
+       MAX(hire_year) OVER(PARTITION BY dept) AS last_hire_year
+FROM employees;
+
+Q8. Show each employee's salary as a percentage of their department's total salary.
+
+SELECT name, dept, salary,
+       ROUND(
+           salary * 100.0 / SUM(salary) OVER(PARTITION BY dept), 2
+       ) AS dept_salary_percentage
+FROM employees;
+
+Q9. Display the number of employees with a salary equal to each employee's salary.
+
+SELECT name, salary,
+       COUNT(*) OVER(PARTITION BY salary) AS employees_with_same_salary
+FROM employees;
+
+Q10. Show the next hire year within each department.
+
+SELECT name, dept, hire_year,
+       LEAD(hire_year) OVER(
+           PARTITION BY dept ORDER BY hire_year, name
+       ) AS next_hire_year
+FROM employees;
