@@ -1,0 +1,38 @@
+Q11. Show the previous hire year within each department.
+
+SELECT name, dept, hire_year,
+       LAG(hire_year) OVER(
+           PARTITION BY dept ORDER BY hire_year, name
+       ) AS previous_hire_year
+FROM employees;
+
+Q12. Display the difference between the current and next employee's salary when ordered by salary.
+
+SELECT name, salary,
+       LEAD(salary) OVER(ORDER BY salary, name) - salary AS next_salary_difference
+FROM employees;
+
+Q13. Assign row numbers to employees separately within each department, ordered by name.
+
+SELECT name, dept,
+       ROW_NUMBER() OVER(
+           PARTITION BY dept ORDER BY name
+       ) AS dept_row_number
+FROM employees;
+
+Q14. Display each employee's salary and the department's total employee count.
+
+SELECT name, dept, salary,
+       COUNT(*) OVER(PARTITION BY dept) AS dept_employee_count
+FROM employees;
+
+Q15. Display the running total of salaries separately for each department.
+
+SELECT name, dept, hire_year, salary,
+       SUM(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS dept_running_salary
+FROM employees;
+
