@@ -1,0 +1,46 @@
+Q16. Find employees hired in the same year as the previous employee in their department.
+
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+           LAG(hire_year) OVER(
+               PARTITION BY dept ORDER BY hire_year, name
+           ) AS previous_hire_year
+    FROM employees
+) AS e
+WHERE hire_year = previous_hire_year;
+
+Q17. Display the cumulative count of employees within each department, ordered by name.
+
+SELECT name, dept,
+       COUNT(*) OVER(
+           PARTITION BY dept
+           ORDER BY name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS dept_running_count
+FROM employees;
+
+Q18. Display each employee's salary and the department's highest salary, with ties sharing the same rank.
+
+SELECT name, dept, salary,
+       DENSE_RANK() OVER(
+           PARTITION BY dept ORDER BY salary DESC
+       ) AS dept_salary_rank
+FROM employees;
+
+Q19. Divide employees into three groups within each department based on hire year.
+
+SELECT name, dept, hire_year,
+       NTILE(3) OVER(
+           PARTITION BY dept ORDER BY hire_year, name
+       ) AS hire_group
+FROM employees;
+
+Q20. Display the average salary of the current employee and the previous employee in hire-year order.
+
+SELECT name, hire_year, salary,
+       AVG(salary) OVER(
+           ORDER BY hire_year, name
+           ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+       ) AS current_previous_avg_salary
+FROM employees;
