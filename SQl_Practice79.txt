@@ -1,0 +1,46 @@
+Q21. Display the salary difference between each employee and the highest-paid employee in their department.
+
+SELECT name, dept, salary,
+       MAX(salary) OVER(PARTITION BY dept) - salary AS salary_difference
+FROM employees;
+
+Q22. Display the number of employees hired up to and including each hire year.
+
+SELECT name, hire_year,
+       COUNT(*) OVER(
+           ORDER BY hire_year
+           RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS employees_hired_so_far
+FROM employees;
+
+Q23. Find employees whose salary is lower than the employee immediately before them in the same department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           LAG(salary) OVER(
+               PARTITION BY dept ORDER BY hire_year, name
+           ) AS previous_salary
+    FROM employees
+) AS e
+WHERE salary < previous_salary;
+
+Q24. Display each employee's salary and the second-highest salary in their department.
+
+SELECT name, dept, salary,
+       MAX(CASE WHEN salary_rank = 2 THEN salary END)
+           OVER(PARTITION BY dept) AS second_highest_salary
+FROM (
+    SELECT name, dept, salary,
+           DENSE_RANK() OVER(
+               PARTITION BY dept ORDER BY salary DESC
+           ) AS salary_rank
+    FROM employees
+) AS e;
+
+Q25. Display the total number of employees in the company alongside every employee.
+
+SELECT name, dept,
+       COUNT(*) OVER() AS total_employees
+FROM employees;
+
