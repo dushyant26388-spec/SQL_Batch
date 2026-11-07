@@ -1,0 +1,47 @@
+Q31. Find the highest-paid employee in each department using ROW_NUMBER().
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept ORDER BY salary DESC, name
+           ) AS rn
+    FROM employees
+) AS e
+WHERE rn = 1;
+
+Q32. Display the first three employees hired in each department.
+
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept ORDER BY hire_year, name
+           ) AS rn
+    FROM employees
+) AS e
+WHERE rn <= 3;
+
+Q33. Display each employee's position from the bottom based on salary within their department.
+
+SELECT name, dept, salary,
+       RANK() OVER(
+           PARTITION BY dept ORDER BY salary
+       ) AS bottom_salary_rank
+FROM employees;
+
+Q34. Display each employee's salary and the total salary of all employees hired in the same year.
+
+SELECT name, hire_year, salary,
+       SUM(salary) OVER(PARTITION BY hire_year) AS yearly_salary_total
+FROM employees;
+
+Q35. Display the average salary of the current and next employee in hire-year order.
+
+SELECT name, hire_year, salary,
+       AVG(salary) OVER(
+           ORDER BY hire_year, name
+           ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING
+       ) AS current_next_avg
+FROM employees;
+
