@@ -1,0 +1,42 @@
+Q36. Find employees whose salary is greater than the previous employee's salary in the company.
+
+SELECT name, salary
+FROM (
+    SELECT name, salary,
+           LAG(salary) OVER(
+               ORDER BY hire_year, name
+           ) AS previous_salary
+    FROM employees
+) AS e
+WHERE salary > previous_salary;
+
+Q37. Display the percentage of employees belonging to each department.
+
+SELECT name, dept,
+       ROUND(
+           COUNT(*) OVER(PARTITION BY dept) * 100.0 /
+           COUNT(*) OVER(), 2
+       ) AS dept_employee_percentage
+FROM employees;
+
+Q38. Display the salary range (highest minus lowest) within each department.
+
+SELECT name, dept, salary,
+       MAX(salary) OVER(PARTITION BY dept) -
+       MIN(salary) OVER(PARTITION BY dept) AS dept_salary_range
+FROM employees;
+
+Q39. Display the difference between each employee's hire year and the earliest hire year in their department.
+
+SELECT name, dept, hire_year,
+       hire_year - MIN(hire_year) OVER(PARTITION BY dept)
+           AS years_after_first_hire
+FROM employees;
+
+Q40. Display the middle salary position of each employee within their department using PERCENT_RANK().
+
+SELECT name, dept, salary,
+       PERCENT_RANK() OVER(
+           PARTITION BY dept ORDER BY salary
+       ) AS salary_percent_rank
+FROM employees;
