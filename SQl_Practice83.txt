@@ -1,0 +1,40 @@
+Q41. Display the first salary in each department when employees are ordered by salary from lowest to highest.
+
+SELECT name, dept, salary,
+       FIRST_VALUE(salary) OVER(
+           PARTITION BY dept ORDER BY salary, name
+       ) AS first_salary
+FROM employees;
+
+Q42. Display the last salary in each department when employees are ordered by salary from lowest to highest.
+
+SELECT name, dept, salary,
+       LAST_VALUE(salary) OVER(
+           PARTITION BY dept
+           ORDER BY salary, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+       ) AS last_salary
+FROM employees;
+
+Q43. Display the salary of the employee immediately after each employee within their department.
+
+SELECT name, dept, salary,
+       LEAD(salary) OVER(
+           PARTITION BY dept ORDER BY salary, name
+       ) AS next_salary
+FROM employees;
+
+Q44. Display the difference between the current employee's hire year and the next employee's hire year in the same department.
+
+SELECT name, dept, hire_year,
+       LEAD(hire_year) OVER(
+           PARTITION BY dept ORDER BY hire_year, name
+       ) - hire_year AS year_difference
+FROM employees;
+
+Q45. Display each employee's salary and the department's average salary, rounded to two decimal places.
+
+SELECT name, dept, salary,
+       ROUND(AVG(salary) OVER(PARTITION BY dept), 2) AS dept_avg_salary
+FROM employees;
+
