@@ -1,0 +1,44 @@
+Q46. Display the number of employees earning more than the minimum salary in their department.
+
+SELECT name, dept, salary,
+       COUNT(CASE
+           WHEN salary > min_salary THEN 1
+       END) OVER(PARTITION BY dept) AS employees_above_minimum
+FROM (
+    SELECT name, dept, salary,
+           MIN(salary) OVER(PARTITION BY dept) AS min_salary
+    FROM employees
+) AS e;
+
+Q47. Display each employee's salary and the department's median salary.
+
+SELECT name, dept, salary,
+       PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY salary)
+           OVER(PARTITION BY dept) AS dept_median_salary
+FROM employees;
+
+Q48. Display the cumulative salary total in each department, ordered by salary from highest to lowest.
+
+SELECT name, dept, salary,
+       SUM(salary) OVER(
+           PARTITION BY dept
+           ORDER BY salary DESC, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS cumulative_dept_salary
+FROM employees;
+
+Q49. Display the number of distinct salary values in each department.
+
+SELECT name, dept, salary,
+       DENSE_RANK() OVER(
+           PARTITION BY dept ORDER BY salary
+       ) AS distinct_salary_count
+FROM employees;
+
+Q50. Display each employee's salary and the salary of the employee ranked immediately before them within their department.
+
+SELECT name, dept, salary,
+       LAG(salary) OVER(
+           PARTITION BY dept ORDER BY salary DESC, name
+       ) AS previous_ranked_salary
+FROM employees;
