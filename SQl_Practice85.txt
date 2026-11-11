@@ -1,0 +1,42 @@
+Q51. Display the department's highest salary and lowest salary in separate columns.
+
+SELECT name, dept,
+       FIRST_VALUE(salary) OVER(
+           PARTITION BY dept ORDER BY salary DESC, name
+       ) AS highest_salary,
+       FIRST_VALUE(salary) OVER(
+           PARTITION BY dept ORDER BY salary, name
+       ) AS lowest_salary
+FROM employees;
+
+Q52. Assign a rank to employees based on hire year, with the newest hire receiving rank 1.
+
+SELECT name, hire_year,
+       ROW_NUMBER() OVER(
+           ORDER BY hire_year DESC, name
+       ) AS newest_hire_position
+FROM employees;
+
+Q53. Display the number of employees hired after each employee within their department.
+
+SELECT name, dept, hire_year,
+       COUNT(*) OVER(PARTITION BY dept) -
+       ROW_NUMBER() OVER(
+           PARTITION BY dept ORDER BY hire_year, name
+       ) AS employees_hired_after
+FROM employees;
+
+Q54. Display each employee's salary and the salary of the employee at the top of their department's salary ranking.
+
+SELECT name, dept, salary,
+       FIRST_VALUE(salary) OVER(
+           PARTITION BY dept ORDER BY salary DESC, name
+       ) AS top_salary
+FROM employees;
+
+Q55. Divide employees into five equal groups based on hire year, oldest hire first.
+
+SELECT name, hire_year,
+       NTILE(5) OVER(ORDER BY hire_year, name) AS hire_group
+FROM employees;
+
