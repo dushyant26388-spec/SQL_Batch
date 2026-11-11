@@ -1,0 +1,42 @@
+Q56. Display the running average salary within each department, ordered by hire year.
+
+SELECT name, dept, hire_year, salary,
+       AVG(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_avg_salary
+FROM employees;
+
+Q57. Display each employee's salary and the percentage rank of their salary within their department.
+
+SELECT name, dept, salary,
+       CUME_DIST() OVER(
+           PARTITION BY dept ORDER BY salary
+       ) AS salary_cumulative_distribution
+FROM employees;
+
+Q58. Display the number of employees earning a salary greater than or equal to each employee's salary within their department.
+
+SELECT name, dept, salary,
+       COUNT(*) OVER(PARTITION BY dept) -
+       RANK() OVER(
+           PARTITION BY dept ORDER BY salary DESC
+       ) + 1 AS employees_at_or_above
+FROM employees;
+
+Q59. Display each employee's salary and the difference from the previous salary in descending salary order within their department.
+
+SELECT name, dept, salary,
+       salary - LAG(salary) OVER(
+           PARTITION BY dept ORDER BY salary DESC, name
+       ) AS salary_difference
+FROM employees;
+
+Q60. Display each employee's hire year and the hire year of the second employee after them in their department.
+
+SELECT name, dept, hire_year,
+       LEAD(hire_year, 2) OVER(
+           PARTITION BY dept ORDER BY hire_year, name
+       ) AS second_next_hire_year
+FROM employees;
