@@ -1,0 +1,52 @@
+Q66. Display the first two employees alphabetically in each department.
+
+SELECT name, dept
+FROM (
+    SELECT name, dept,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept ORDER BY name
+           ) AS rn
+    FROM employees
+) AS e
+WHERE rn <= 2;
+
+Q67. Display the total salary of employees hired before or during each employee's hire year.
+
+SELECT name, hire_year, salary,
+       SUM(salary) OVER(
+           ORDER BY hire_year
+           RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS cumulative_year_salary
+FROM employees;
+
+Q68. Display the number of employees in each department who have a salary greater than the department's minimum salary.
+
+SELECT name, dept, salary,
+       COUNT(CASE WHEN salary > min_salary THEN 1 END)
+           OVER(PARTITION BY dept) AS employees_above_min
+FROM (
+    SELECT name, dept, salary,
+           MIN(salary) OVER(PARTITION BY dept) AS min_salary
+    FROM employees
+) AS e;
+
+Q69. Display each employee's salary and the salary of the employee with the highest salary in their department.
+
+SELECT name, dept, salary,
+       FIRST_VALUE(salary) OVER(
+           PARTITION BY dept ORDER BY salary DESC, name
+       ) AS department_top_salary
+FROM employees;
+
+Q70. Display employees whose salary is equal to the next employee's salary in the same department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           LEAD(salary) OVER(
+               PARTITION BY dept ORDER BY hire_year, name
+           ) AS next_salary
+    FROM employees
+) AS e
+WHERE salary = next_salary;
+
