@@ -1,0 +1,49 @@
+Q76. Display the total salary of the current employee and the next two employees within each department.
+
+SELECT name, dept, salary,
+       SUM(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year, name
+           ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING
+       ) AS next_three_salary_total
+FROM employees;
+
+Q77. Display employees whose salary is in the top 25% of their department using CUME_DIST().
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           CUME_DIST() OVER(
+               PARTITION BY dept ORDER BY salary DESC
+           ) AS salary_distribution
+    FROM employees
+) AS e
+WHERE salary_distribution <= 0.25;
+
+Q78. Display the salary rank and hire-year rank of every employee within their department.
+
+SELECT name, dept, salary, hire_year,
+       RANK() OVER(
+           PARTITION BY dept ORDER BY salary DESC
+       ) AS salary_rank,
+       RANK() OVER(
+           PARTITION BY dept ORDER BY hire_year
+       ) AS hire_rank
+FROM employees;
+
+Q79. Display each employee's salary and the difference between their salary and the department's average salary.
+
+SELECT name, dept, salary,
+       salary - AVG(salary) OVER(
+           PARTITION BY dept
+       ) AS difference_from_dept_avg
+FROM employees;
+
+Q80. Display the percentage of employees hired in each year out of all employees.
+
+SELECT name, hire_year,
+       ROUND(
+           COUNT(*) OVER(PARTITION BY hire_year) * 100.0 /
+           COUNT(*) OVER(), 2
+       ) AS hire_year_percentage
+FROM employees;
