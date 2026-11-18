@@ -1,0 +1,40 @@
+Q1. Display each employee's name and the row number in descending hire-year order.
+
+SELECT name, hire_year,
+       ROW_NUMBER() OVER(ORDER BY hire_year DESC, name) AS row_num
+FROM employees;
+
+Q2. Find employees who have the same salary within their department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           COUNT(*) OVER(PARTITION BY dept, salary) AS salary_count
+    FROM employees
+) AS e
+WHERE salary_count > 1;
+
+Q3. Display the difference between an employee's hire year and the company's latest hire year.
+
+SELECT name, hire_year,
+       MAX(hire_year) OVER() - hire_year AS years_difference
+FROM employees;
+
+Q4. Find the department-wise employee with the lowest salary using ROW_NUMBER().
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept ORDER BY salary, name
+           ) AS rn
+    FROM employees
+) AS e
+WHERE rn = 1;
+
+Q5. Display each employee's salary and the number of employees earning a lower salary in the company.
+
+SELECT name, salary,
+       RANK() OVER(ORDER BY salary) - 1 AS employees_with_lower_salary
+FROM employees;
+
