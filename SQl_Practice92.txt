@@ -1,0 +1,38 @@
+Q6. Display each employee's hire year and the number of employees hired in the same department before them.
+
+SELECT name, dept, hire_year,
+       ROW_NUMBER() OVER(
+           PARTITION BY dept ORDER BY hire_year, name
+       ) - 1 AS employees_hired_before
+FROM employees;
+
+Q7. Display the department-wise highest and lowest salary difference as a separate column.
+
+SELECT name, dept, salary,
+       MAX(salary) OVER(PARTITION BY dept) -
+       MIN(salary) OVER(PARTITION BY dept) AS salary_range
+FROM employees;
+
+Q8. Find employees whose salary is equal to the highest salary in their department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           MAX(salary) OVER(PARTITION BY dept) AS max_salary
+    FROM employees
+) AS e
+WHERE salary = max_salary;
+
+Q9. Display the employee's salary and the salary of the third employee after them in salary order.
+
+SELECT name, salary,
+       LEAD(salary, 3) OVER(ORDER BY salary, name) AS third_next_salary
+FROM employees;
+
+Q10. Display the salary of the employee who is three positions before each employee in hire-year order.
+
+SELECT name, hire_year, salary,
+       LAG(salary, 3) OVER(
+           ORDER BY hire_year, name
+       ) AS third_previous_salary
+FROM employees;
