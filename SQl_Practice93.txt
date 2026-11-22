@@ -1,0 +1,48 @@
+Q11. Find the top three distinct salaries in each department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           DENSE_RANK() OVER(
+               PARTITION BY dept ORDER BY salary DESC
+           ) AS salary_rank
+    FROM employees
+) AS e
+WHERE salary_rank <= 3;
+
+Q12. Display each employee's position from the newest hire to the oldest hire within their department.
+
+SELECT name, dept, hire_year,
+       ROW_NUMBER() OVER(
+           PARTITION BY dept ORDER BY hire_year DESC, name
+       ) AS hire_position
+FROM employees;
+
+Q13. Display the department-wise running maximum salary based on hire year.
+
+SELECT name, dept, hire_year, salary,
+       MAX(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_max_salary
+FROM employees;
+
+Q14. Display the department-wise running minimum salary based on hire year.
+
+SELECT name, dept, hire_year, salary,
+       MIN(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_min_salary
+FROM employees;
+
+Q15. Display each employee's salary and the next employee's salary within the same department in descending salary order.
+
+SELECT name, dept, salary,
+       LEAD(salary) OVER(
+           PARTITION BY dept ORDER BY salary DESC, name
+       ) AS next_employee_salary
+FROM employees;
+
