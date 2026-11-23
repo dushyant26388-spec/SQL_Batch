@@ -1,0 +1,48 @@
+Q16. Display the department-wise salary rank and show only employees ranked first or second.
+
+SELECT name, dept, salary, salary_rank
+FROM (
+    SELECT name, dept, salary,
+           DENSE_RANK() OVER(
+               PARTITION BY dept ORDER BY salary DESC
+           ) AS salary_rank
+    FROM employees
+) AS e
+WHERE salary_rank <= 2;
+
+Q17. Display the total salary of the previous two employees within each department.
+
+SELECT name, dept, salary,
+       SUM(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year, name
+           ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING
+       ) AS previous_two_salary_total
+FROM employees;
+
+Q18. Display each employee's salary and the average salary of the next two employees within their department.
+
+SELECT name, dept, salary,
+       AVG(salary) OVER(
+           PARTITION BY dept
+           ORDER BY hire_year, name
+           ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING
+       ) AS next_two_avg_salary
+FROM employees;
+
+Q19. Display each employee's salary rank and their department's employee count.
+
+SELECT name, dept, salary,
+       RANK() OVER(
+           PARTITION BY dept ORDER BY salary DESC
+       ) AS salary_rank,
+       COUNT(*) OVER(PARTITION BY dept) AS dept_employee_count
+FROM employees;
+
+Q20. Display each employee's salary and the difference between their salary and the previous employee's salary in alphabetical order within their department.
+
+SELECT name, dept, salary,
+       salary - LAG(salary) OVER(
+           PARTITION BY dept ORDER BY name
+       ) AS salary_difference
+FROM employees;
