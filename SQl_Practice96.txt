@@ -1,0 +1,40 @@
+Q6. Show each employee's salary and the salary of the employee who joined just before them.
+
+SELECT name, hire_year, salary,
+       LAG(salary) OVER(
+           ORDER BY hire_year, name
+       ) AS previous_salary
+FROM employees;
+
+Q7. Find the second-highest salary in each department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           DENSE_RANK() OVER(
+               PARTITION BY dept ORDER BY salary DESC
+           ) AS rnk
+    FROM employees
+) AS e
+WHERE rnk = 2;
+
+Q8. Show how many employees joined in the same year as each employee.
+
+SELECT name, hire_year,
+       COUNT(*) OVER(PARTITION BY hire_year) AS same_year_employees
+FROM employees;
+
+Q9. Show each employee's salary and the total salary paid in their department.
+
+SELECT name, dept, salary,
+       SUM(salary) OVER(PARTITION BY dept) AS dept_total_salary
+FROM employees;
+
+Q10. Show employees in order of their joining year and display their running employee count.
+
+SELECT name, hire_year,
+       COUNT(*) OVER(
+           ORDER BY hire_year, name
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_count
+FROM employees;
