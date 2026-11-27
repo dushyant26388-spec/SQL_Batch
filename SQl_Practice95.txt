@@ -1,0 +1,42 @@
+Q1. Show all employees along with their position based on salary, starting from the highest salary.
+
+SELECT name, salary,
+       ROW_NUMBER() OVER(ORDER BY salary DESC) AS position
+FROM employees;
+
+Q2. Show each employee's name, department, and how many people work in their department.
+
+SELECT name, dept,
+       COUNT(*) OVER(PARTITION BY dept) AS total_employees
+FROM employees;
+
+Q3. Find the employee who joined first in each department.
+
+SELECT name, dept, hire_year
+FROM (
+    SELECT name, dept, hire_year,
+           ROW_NUMBER() OVER(
+               PARTITION BY dept ORDER BY hire_year
+           ) AS rn
+    FROM employees
+) AS e
+WHERE rn = 1;
+
+Q4. Show each employee's salary and the highest salary in the company.
+
+SELECT name, salary,
+       MAX(salary) OVER() AS highest_salary
+FROM employees;
+
+Q5. Find employees who earn the same salary as another employee in their department.
+
+SELECT name, dept, salary
+FROM (
+    SELECT name, dept, salary,
+           COUNT(*) OVER(
+               PARTITION BY dept, salary
+           ) AS total
+    FROM employees
+) AS e
+WHERE total > 1;
+
